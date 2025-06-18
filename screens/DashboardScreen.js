@@ -1,6 +1,13 @@
+// DashboardScreen.js
+import React, { useEffect, useState } from 'react';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { loadNotes } from '../utils/storage';
 
 export default function DashboardScreen({ navigation }) {
@@ -21,11 +28,11 @@ export default function DashboardScreen({ navigation }) {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'Important':
-        return '#FF6B6B'; // red
+        return '#E63946'; // red
       case 'Normal':
-        return '#FFA500'; // orange
+        return '#F4A261'; // orange
       case 'Reminder':
-        return '#87CEFA'; // blue
+        return '#A8DADC'; // blue
       default:
         return '#ccc';
     }
@@ -68,13 +75,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#F1FAEE',
   },
   list: {
     paddingBottom: 80,
   },
   noteCard: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FFFFFF',
     padding: 15,
     marginBottom: 15,
     borderLeftWidth: 6,
@@ -82,23 +89,26 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'Montserrat_700Bold',
     marginBottom: 4,
+    color: '#1D3557',
   },
   date: {
     fontSize: 12,
-    color: '#777',
+    fontFamily: 'Montserrat_400Regular',
+    color: '#6C757D',
     marginBottom: 8,
   },
   content: {
     fontSize: 14,
-    color: '#333',
+    fontFamily: 'Montserrat_400Regular',
+    color: '#343A40',
   },
   addButton: {
     position: 'absolute',
     bottom: 25,
     right: 25,
-    backgroundColor: '#007AFF',
+    backgroundColor: '#457B9D',
     paddingVertical: 14,
     paddingHorizontal: 24,
     borderRadius: 30,
@@ -106,7 +116,7 @@ const styles = StyleSheet.create({
   },
   addText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontFamily: 'Montserrat_700Bold',
     fontSize: 16,
   },
   empty: {
@@ -114,5 +124,6 @@ const styles = StyleSheet.create({
     color: '#999',
     marginTop: 50,
     fontSize: 16,
+    fontFamily: 'Montserrat_400Regular',
   },
 });

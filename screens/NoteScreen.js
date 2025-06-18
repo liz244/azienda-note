@@ -1,3 +1,4 @@
+// NoteScreen.js
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { deleteNoteById } from '../utils/storage';
@@ -28,11 +29,11 @@ export default function NoteScreen() {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'Important':
-        return '#FF6B6B';
+        return '#E63946';
       case 'Normal':
-        return '#FFA500';
+        return '#F4A261';
       case 'Reminder':
-        return '#87CEFA';
+        return '#A8DADC';
       default:
         return '#ccc';
     }
@@ -40,12 +41,7 @@ export default function NoteScreen() {
 
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          styles.noteCard,
-          { borderLeftColor: getPriorityColor(note.priority) },
-        ]}
-      >
+      <View style={[styles.noteCard, { borderLeftColor: getPriorityColor(note.priority) }]}>
         <Text style={styles.title}>{note.title}</Text>
         <Text style={styles.date}>{note.date}</Text>
         <Text style={styles.content}>{note.content}</Text>
@@ -74,27 +70,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#F1FAEE',
   },
   noteCard: {
-    backgroundColor: '#f5f5f5',
-    padding: 15,
+    backgroundColor: '#FFFFFF',
+    padding: 20,
     borderLeftWidth: 6,
     borderRadius: 8,
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontFamily: 'Montserrat_700Bold',
     marginBottom: 6,
+    color: '#1D3557',
   },
   date: {
     fontSize: 14,
-    color: '#777',
+    fontFamily: 'Montserrat_400Regular',
+    color: '#6C757D',
     marginBottom: 12,
   },
   content: {
     fontSize: 16,
-    color: '#333',
+    fontFamily: 'Montserrat_400Regular',
+    color: '#343A40',
   },
   actions: {
     flexDirection: 'row',
@@ -107,13 +106,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   editButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#457B9D',
   },
   deleteButton: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: '#E63946',
   },
   buttonText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontFamily: 'Montserrat_700Bold',
   },
 });

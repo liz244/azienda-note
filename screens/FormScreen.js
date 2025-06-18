@@ -1,6 +1,14 @@
+// FormScreen.js
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useState } from 'react';
-import { Alert, Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { v4 as uuidv4 } from 'uuid';
 import { loadNotes, saveNotes } from '../utils/storage';
 
@@ -44,6 +52,7 @@ export default function FormScreen() {
         value={title}
         onChangeText={setTitle}
         style={styles.input}
+        placeholderTextColor="#6C757D"
       />
 
       <TextInput
@@ -53,6 +62,7 @@ export default function FormScreen() {
         style={[styles.input, styles.textArea]}
         multiline
         numberOfLines={5}
+        placeholderTextColor="#6C757D"
       />
 
       <Text style={styles.label}>Priority:</Text>
@@ -60,10 +70,7 @@ export default function FormScreen() {
         {['Important', 'Normal', 'Reminder'].map((level) => (
           <TouchableOpacity
             key={level}
-            style={[
-              styles.priorityButton,
-              priority === level && styles.selectedPriority,
-            ]}
+            style={[styles.priorityButton, priority === level && styles.selectedPriority]}
             onPress={() => setPriority(level)}
           >
             <Text style={styles.priorityText}>{level}</Text>
@@ -71,7 +78,9 @@ export default function FormScreen() {
         ))}
       </View>
 
-      <Button title="Save" onPress={handleSave} />
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        <Text style={styles.saveButtonText}>Save</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -80,20 +89,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: '#F1FAEE',
   },
   input: {
-    backgroundColor: '#eee',
+    backgroundColor: '#FFFFFF',
     padding: 12,
     marginBottom: 15,
     borderRadius: 8,
+    fontFamily: 'Montserrat_400Regular',
+    fontSize: 16,
+    color: '#343A40',
   },
   textArea: {
     height: 100,
     textAlignVertical: 'top',
   },
   label: {
-    fontWeight: 'bold',
-    marginBottom: 5,
+    fontFamily: 'Montserrat_700Bold',
+    fontSize: 16,
+    marginBottom: 8,
+    color: '#1D3557',
   },
   priorityContainer: {
     flexDirection: 'row',
@@ -102,14 +117,26 @@ const styles = StyleSheet.create({
   priorityButton: {
     paddingVertical: 8,
     paddingHorizontal: 12,
-    backgroundColor: '#ddd',
+    backgroundColor: '#D3D3D3',
     borderRadius: 8,
     marginRight: 10,
   },
   selectedPriority: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#457B9D',
   },
   priorityText: {
     color: '#fff',
+    fontFamily: 'Montserrat_700Bold',
+  },
+  saveButton: {
+    backgroundColor: '#1D3557',
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontFamily: 'Montserrat_700Bold',
   },
 });
