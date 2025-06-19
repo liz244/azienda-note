@@ -1,4 +1,4 @@
-// NoteScreen.js
+
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { deleteNoteById } from '../utils/storage';

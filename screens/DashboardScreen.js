@@ -1,4 +1,4 @@
-// DashboardScreen.js
+// DashboardScreen.js avec Swipe-to-Delete
 import React, { useEffect, useState } from 'react';
 import {
   FlatList,
@@ -8,7 +8,8 @@ import {
   View,
 } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { loadNotes } from '../utils/storage';
+import { loadNotes, deleteNoteById } from '../utils/storage';
+import { Swipeable } from 'react-native-gesture-handler';
 
 export default function DashboardScreen({ navigation }) {
   const [notes, setNotes] = useState([]);
@@ -28,27 +29,44 @@ export default function DashboardScreen({ navigation }) {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'Important':
-        return '#E63946'; // red
+        return '#E63946';
       case 'Normal':
-        return '#F4A261'; // orange
+        return '#F4A261';
       case 'Reminder':
-        return '#A8DADC'; // blue
+        return '#A8DADC';
       default:
         return '#ccc';
     }
   };
 
-  const renderItem = ({ item }) => (
+  const handleDelete = async (id) => {
+    await deleteNoteById(id);
+    const updatedNotes = await loadNotes();
+    setNotes(updatedNotes);
+  };
+
+  const renderRightActions = (noteId) => (
     <TouchableOpacity
-      style={[styles.noteCard, { borderLeftColor: getPriorityColor(item.priority) }]}
-      onPress={() => navigation.navigate('Note', { note: item })}
+      style={styles.deleteAction}
+      onPress={() => handleDelete(noteId)}
     >
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.date}>{item.date}</Text>
-      <Text numberOfLines={2} style={styles.content}>
-        {item.content}
-      </Text>
+      <Text style={styles.deleteText}>Delete</Text>
     </TouchableOpacity>
+  );
+
+  const renderItem = ({ item }) => (
+    <Swipeable renderRightActions={() => renderRightActions(item.id)}>
+      <TouchableOpacity
+        style={[styles.noteCard, { borderLeftColor: getPriorityColor(item.priority) }]}
+        onPress={() => navigation.navigate('Note', { note: item })}
+      >
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.date}>{item.date}</Text>
+        <Text numberOfLines={2} style={styles.content}>
+          {item.content}
+        </Text>
+      </TouchableOpacity>
+    </Swipeable>
   );
 
   return (
@@ -125,5 +143,17 @@ const styles = StyleSheet.create({
     marginTop: 50,
     fontSize: 16,
     fontFamily: 'Montserrat_400Regular',
+  },
+  deleteAction: {
+    backgroundColor: '#E63946',
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    paddingHorizontal: 20,
+    marginBottom: 15,
+    borderRadius: 8,
+  },
+  deleteText: {
+    color: '#fff',
+    fontFamily: 'Montserrat_700Bold',
   },
 });
