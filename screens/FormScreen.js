@@ -1,15 +1,16 @@
-
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useState } from 'react';
 import {
   Alert,
+  Button,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '../utils/generateId';
+
 import { loadNotes, saveNotes } from '../utils/storage';
 
 export default function FormScreen() {
@@ -22,27 +23,37 @@ export default function FormScreen() {
   const [priority, setPriority] = useState(editingNote?.priority || 'Normal');
 
   const handleSave = async () => {
+    console.log('Save pressed');
+
     if (!title.trim() || !content.trim()) {
       Alert.alert('Missing info', 'Title and content are required.');
       return;
     }
 
-    const notes = await loadNotes();
+    try {
+      const notes = await loadNotes();
 
-    const newNote = {
-      id: editingNote ? editingNote.id : uuidv4(),
-      title,
-      content,
-      date: editingNote ? editingNote.date : new Date().toISOString().split('T')[0],
-      priority,
-    };
+      const newNote = {
+       id: editingNote ? editingNote.id : generateId(),
 
-    const updatedNotes = editingNote
-      ? notes.map((n) => (n.id === editingNote.id ? newNote : n))
-      : [newNote, ...notes];
+        title,
+        content,
+        date: editingNote ? editingNote.date : new Date().toISOString().split('T')[0],
+        priority,
+      };
 
-    await saveNotes(updatedNotes);
-    navigation.navigate('Dashboard');
+      const updatedNotes = editingNote
+        ? notes.map((n) => (n.id === editingNote.id ? newNote : n))
+        : [newNote, ...notes];
+
+      console.log('Saving note:', newNote);
+      await saveNotes(updatedNotes);
+      console.log('Saved successfully');
+
+      navigation.navigate('Dashboard');
+    } catch (e) {
+      console.error('Error saving note:', e);
+    }
   };
 
   return (
@@ -52,9 +63,7 @@ export default function FormScreen() {
         value={title}
         onChangeText={setTitle}
         style={styles.input}
-        placeholderTextColor="#6C757D"
       />
-
       <TextInput
         placeholder="Content"
         value={content}
@@ -62,15 +71,16 @@ export default function FormScreen() {
         style={[styles.input, styles.textArea]}
         multiline
         numberOfLines={5}
-        placeholderTextColor="#6C757D"
       />
-
       <Text style={styles.label}>Priority:</Text>
       <View style={styles.priorityContainer}>
         {['Important', 'Normal', 'Reminder'].map((level) => (
           <TouchableOpacity
             key={level}
-            style={[styles.priorityButton, priority === level && styles.selectedPriority]}
+            style={[
+              styles.priorityButton,
+              priority === level && styles.selectedPriority,
+            ]}
             onPress={() => setPriority(level)}
           >
             <Text style={styles.priorityText}>{level}</Text>
@@ -78,9 +88,7 @@ export default function FormScreen() {
         ))}
       </View>
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Save</Text>
-      </TouchableOpacity>
+      <Button title="Save" onPress={handleSave} />
     </View>
   );
 }
@@ -92,23 +100,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1FAEE',
   },
   input: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#eee',
     padding: 12,
     marginBottom: 15,
     borderRadius: 8,
     fontFamily: 'Montserrat_400Regular',
-    fontSize: 16,
-    color: '#343A40',
   },
   textArea: {
     height: 100,
     textAlignVertical: 'top',
   },
   label: {
+    fontWeight: 'bold',
+    marginBottom: 5,
     fontFamily: 'Montserrat_700Bold',
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#1D3557',
   },
   priorityContainer: {
     flexDirection: 'row',
@@ -117,7 +122,7 @@ const styles = StyleSheet.create({
   priorityButton: {
     paddingVertical: 8,
     paddingHorizontal: 12,
-    backgroundColor: '#D3D3D3',
+    backgroundColor: '#ddd',
     borderRadius: 8,
     marginRight: 10,
   },
@@ -126,17 +131,6 @@ const styles = StyleSheet.create({
   },
   priorityText: {
     color: '#fff',
-    fontFamily: 'Montserrat_700Bold',
-  },
-  saveButton: {
-    backgroundColor: '#1D3557',
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  saveButtonText: {
-    color: '#fff',
-    fontSize: 16,
     fontFamily: 'Montserrat_700Bold',
   },
 });

@@ -1,0 +1,144 @@
+# Azienda Notes
+
+Azienda Notes is a mobile note-taking application developed for internal use by employees of the digital group AZIENDA.
+
+## 📱 Overview
+
+This application was created to unify how notes are taken during meetings by collaborators across different teams. It provides a structured interface with consistent design and allows for offline access thanks to local storage.
+
+---
+
+## ✅ Features
+
+* Create, view, edit and delete notes
+* Assign priority levels: Important, Normal, Reminder
+* Swipe to delete notes directly from the Dashboard
+* Notes are stored **locally** (no cloud) for GDPR compliance
+* Application fully in **English**
+* Responsive layout for mobile and tablet
+
+---
+
+## 🎨 Design Guidelines
+
+### Typography
+
+* **Montserrat**
+
+  * `Montserrat_400Regular`
+  * `Montserrat_700Bold`
+
+### Colors
+
+| Purpose       | Hex       |
+| ------------- | --------- |
+| Important     | `#E63946` |
+| Normal        | `#F4A261` |
+| Reminder      | `#A8DADC` |
+| Text          | `#343A40` |
+| Date / Labels | `#6C757D` |
+| Background    | `#F1FAEE` |
+| Accent button | `#457B9D` |
+
+---
+
+## 🧭 App Structure
+
+### Screens
+
+* `DashboardScreen`: Displays all notes (or empty state). Notes are displayed as cards with truncated content. Each card shows:
+
+  * Title
+  * Date
+  * First lines of content
+  * Priority via colored border
+  * Swipe-to-delete interaction
+
+* `FormScreen`: Allows creating or editing a note.
+
+  * Fields: title, content, priority
+  * Save button
+
+* `NoteScreen`: Shows full content of a selected note
+
+  * Edit and Delete buttons
+
+---
+
+## 📦 Tech Stack
+
+### Framework & Tools
+
+* [React Native](https://reactnative.dev/)
+* [Expo](https://expo.dev/)
+* [React Navigation](https://reactnavigation.org/)
+
+### Libraries
+
+```bash
+@react-navigation/native
+@react-navigation/native-stack
+expo-google-fonts/montserrat
+expo-font
+expo-app-loading
+react-native-gesture-handler
+uuid
+```
+
+### Local storage
+
+* AsyncStorage (via `utils/storage.js`)
+
+---
+
+## 🔐 GDPR Compliance
+
+All notes are stored locally on the user's device and are not shared or synced through cloud services.
+
+---
+
+## 🛠️ Developer
+
+* 💻 Name: Liz Bouka
+* 👩‍💼 Role: Mobile App Developer — AZIENDA — Support & Innovation
+* 🌍 Target platforms: iOS & Android
+
+---
+
+## 📁 Project Setup
+
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Start the project:
+
+```bash
+npx expo start
+```
+
+4. For testing on mobile:
+
+```bash
+npx expo start --lan
+```
+
+Then scan the QR code using Expo Go on your phone
+
+---
+
+## 🚧 Optional Improvements
+
+* Sorting or filtering by priority
+* Dark mode
+* Tagging system
+* Export / import notes
+
+---
+
+## 📄 License
+
+This project is for internal use at AZIENDA only.

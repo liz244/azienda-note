@@ -1,6 +1,6 @@
-
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { deleteNoteById } from '../utils/storage';
 
 export default function NoteScreen() {
@@ -9,31 +9,41 @@ export default function NoteScreen() {
   const { note } = route.params;
 
   const handleDelete = () => {
-    Alert.alert(
-      'Delete Note',
-      'Are you sure you want to delete this note?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            await deleteNoteById(note.id);
-            navigation.navigate('Dashboard');
-          },
-        },
-      ]
-    );
+    if (Platform.OS === 'web') {
+      
+      const confirmed = window.confirm('Êtes-vous sûr de vouloir supprimer cette note ?');
+      if (confirmed) {
+        deleteNote();
+      }
+    } else {
+      Alert.alert(
+        'Supprimer la note',
+        'Êtes-vous sûr de vouloir supprimer cette note ?',
+        [
+          { text: 'Annuler', style: 'cancel' },
+          { text: 'Supprimer', style: 'destructive', onPress: deleteNote },
+        ]
+      );
+    }
+  };
+
+  const deleteNote = async () => {
+    try {
+      await deleteNoteById(note.id);
+      navigation.navigate('Dashboard'); 
+    } catch (error) {
+      console.error('Erreur lors de la suppression :', error);
+    }
   };
 
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'Important':
-        return '#E63946';
+        return '#F45B69';
       case 'Normal':
-        return '#F4A261';
+        return '#114B5F';
       case 'Reminder':
-        return '#A8DADC';
+        return '#7EE4EC';
       default:
         return '#ccc';
     }
@@ -74,7 +84,7 @@ const styles = StyleSheet.create({
   },
   noteCard: {
     backgroundColor: '#FFFFFF',
-    padding: 20,
+    padding: 15,
     borderLeftWidth: 6,
     borderRadius: 8,
   },
@@ -106,10 +116,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   editButton: {
-    backgroundColor: '#457B9D',
+    backgroundColor: '#114B5F',
   },
   deleteButton: {
-    backgroundColor: '#E63946',
+    backgroundColor: '#F45B69',
   },
   buttonText: {
     color: '#fff',

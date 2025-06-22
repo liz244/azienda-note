@@ -1,18 +1,18 @@
-// DashboardScreen.js avec Swipe-to-Delete
 import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { loadNotes, deleteNoteById } from '../utils/storage';
-import { Swipeable } from 'react-native-gesture-handler';
+import { loadNotes } from '../utils/storage';
 
 export default function DashboardScreen({ navigation }) {
   const [notes, setNotes] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -25,57 +25,52 @@ export default function DashboardScreen({ navigation }) {
       fetchNotes();
     }
   }, [isFocused]);
+const getPriorityColor = (priority) => {
+  switch (priority) {
+    case 'Important':
+      return '#F45B69'; // rouge vif
+    case 'Normal':
+      return '#114B5F'; // bleu foncé
+    case 'Reminder':
+      return '#7EE4EC'; // bleu clair
+    default:
+      return '#ccc'; // par défaut
+  }
+};
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'Important':
-        return '#E63946';
-      case 'Normal':
-        return '#F4A261';
-      case 'Reminder':
-        return '#A8DADC';
-      default:
-        return '#ccc';
-    }
-  };
-
-  const handleDelete = async (id) => {
-    await deleteNoteById(id);
-    const updatedNotes = await loadNotes();
-    setNotes(updatedNotes);
-  };
-
-  const renderRightActions = (noteId) => (
-    <TouchableOpacity
-      style={styles.deleteAction}
-      onPress={() => handleDelete(noteId)}
-    >
-      <Text style={styles.deleteText}>Delete</Text>
-    </TouchableOpacity>
+  const filteredNotes = notes.filter((note) =>
+    note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    note.content.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const renderItem = ({ item }) => (
-    <Swipeable renderRightActions={() => renderRightActions(item.id)}>
-      <TouchableOpacity
-        style={[styles.noteCard, { borderLeftColor: getPriorityColor(item.priority) }]}
-        onPress={() => navigation.navigate('Note', { note: item })}
-      >
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.date}>{item.date}</Text>
-        <Text numberOfLines={2} style={styles.content}>
-          {item.content}
-        </Text>
-      </TouchableOpacity>
-    </Swipeable>
+    <TouchableOpacity
+      style={[styles.noteCard, { borderLeftColor: getPriorityColor(item.priority) }]}
+      onPress={() => navigation.navigate('Note', { note: item })}
+    >
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.date}>{item.date}</Text>
+      <Text numberOfLines={2} style={styles.content}>
+        {item.content}
+      </Text>
+    </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      {notes.length === 0 ? (
-        <Text style={styles.empty}>No notes yet.</Text>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search notes..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholderTextColor="#999"
+      />
+
+      {filteredNotes.length === 0 ? (
+        <Text style={styles.empty}>No matching notes.</Text>
       ) : (
         <FlatList
-          data={notes}
+          data={filteredNotes}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
           contentContainerStyle={styles.list}
@@ -94,6 +89,16 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#F1FAEE',
+  },
+  searchInput: {
+    fontFamily: 'Montserrat_400Regular',
+    fontSize: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginBottom: 15,
+    color: '#1D3557',
   },
   list: {
     paddingBottom: 80,
@@ -143,17 +148,5 @@ const styles = StyleSheet.create({
     marginTop: 50,
     fontSize: 16,
     fontFamily: 'Montserrat_400Regular',
-  },
-  deleteAction: {
-    backgroundColor: '#E63946',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    paddingHorizontal: 20,
-    marginBottom: 15,
-    borderRadius: 8,
-  },
-  deleteText: {
-    color: '#fff',
-    fontFamily: 'Montserrat_700Bold',
   },
 });
